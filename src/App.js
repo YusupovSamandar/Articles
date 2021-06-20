@@ -1,23 +1,24 @@
-import logo from './logo.svg';
+import { useEffect } from 'react';
 import './App.css';
+import { fetchData, handleFilter } from './actions';
+import { useDispatch, useSelector } from 'react-redux';
+import Sidebar from './containers/sidebar/sidebar';
+import axios from 'axios';
 
 function App() {
+  const currentArticle = useSelector(state => state.currentArticle);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const load = async () => {
+    const { data: articles } = await axios.get("http://localhost:4000/data");
+    dispatch(fetchData(articles));
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Sidebar article={currentArticle} />
     </div>
   );
 }
